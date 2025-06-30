@@ -1,0 +1,41 @@
+# APP自动化测试框架配置文件
+
+# Appium服务器配置
+appium:
+  host: "127.0.0.1"
+  port: 4723
+  path: "/wd/hub"
+
+# 测试环境配置
+environments:
+  android:
+    platform_name: "Android"
+    automation_name: "UiAutomator2"
+    device_name: "Android Emulator"
+    platform_version: "11.0"
+    app_package: "com.weather.forecast.weatherlive"
+    app_activity: "com.weather.forecast.weatherlive.MainActivity"
+    no_reset: true
+    new_command_timeout: 300
+    
+  ios:
+    platform_name: "iOS"
+    automation_name: "XCUITest"
+    device_name: "iPhone Simulator"
+    platform_version: "15.0"
+    bundle_id: "com.weather.forecast.weatherlive"
+    no_reset: true
+    new_command_timeout: 300
+
+# 测试数据配置
+test_data:
+  default_timeout: 10
+  implicit_wait: 5
+  screenshot_on_failure: true
+  video_recording: false
+
+# 报告配置
+reports:
+  html_report: true
+  allure_report: true
+  report_path: "./reports" 
