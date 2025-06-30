@@ -322,28 +322,65 @@ xcrun simctl list devices
 
 ### 1. GitHub Actions
 
-创建 `.github/workflows/test.yml`：
+项目包含两个 CI 配置文件：
+
+#### 主要测试流程 (`.github/workflows/appium-test.yml`)
 
 ```yaml
-name: 自动化测试
-on: [push, pull_request]
+name: Appium 自动化测试
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  test:
+  appium-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: 设置Python
-        uses: actions/setup-python@v2
+      - name: 设置Python 3.9
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
-      - name: 安装依赖
-        run: pip install -r requirements.txt
+          python-version: 3.9
+      - name: 安装Appium
+        run: npm install -g appium@latest
       - name: 运行测试
         run: python run_tests.py --report
 ```
 
-### 2. Jenkins Pipeline
+#### 完整测试流程 (`.github/workflows/test.yml`)
+
+包含多 Python 版本测试和 Android 模拟器支持。
+
+### 2. Docker 支持
+
+#### 构建和运行
+
+```bash
+# 构建镜像
+docker build -t appium-test-framework .
+
+# 使用docker-compose运行
+docker-compose up --build
+
+# 直接运行容器
+docker run -p 4723:4723 appium-test-framework
+```
+
+#### 环境变量
+
+| 变量名       | 默认值           | 说明              |
+| ------------ | ---------------- | ----------------- |
+| APPIUM_HOST  | 127.0.0.1        | Appium 服务器地址 |
+| APPIUM_PORT  | 4723             | Appium 服务器端口 |
+| ANDROID_HOME | /opt/android-sdk | Android SDK 路径  |
+
+### 3. 本地 CI/CD 设置
+
+详细设置说明请参考 [CI_CD_SETUP.md](CI_CD_SETUP.md)
+
+### 4. Jenkins Pipeline
 
 ```groovy
 pipeline {
@@ -354,14 +391,29 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Install Dependencies') {
+        stage('Setup Environment') {
             steps {
+                sh 'npm install -g appium@latest'
                 sh 'pip install -r requirements.txt'
             }
         }
         stage('Run Tests') {
             steps {
+                sh 'appium &'
+                sh 'sleep 10'
                 sh 'python run_tests.py --report'
+            }
+        }
+        stage('Publish Results') {
+            steps {
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'reports',
+                    reportFiles: 'test_report.html',
+                    reportName: 'Test Report'
+                ])
             }
         }
     }

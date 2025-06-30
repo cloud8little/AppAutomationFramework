@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  appium-test:
+    build: .
+    ports:
+      - "4723:4723" # Appium端口
+    volumes:
+      - ./reports:/app/reports
+      - ./screenshots:/app/screenshots
+      - ./config:/app/config
+      - ./test_data:/app/test_data
+    environment:
+      - APPIUM_HOST=127.0.0.1
+      - APPIUM_PORT=4723
+      - ANDROID_HOME=/opt/android-sdk
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+    networks:
+      - appium-network
+
+  # 可选：Android模拟器服务（需要额外的配置）
+  # android-emulator:
+  #   image: budtmo/docker-android-x86-11.0
+  #   privileged: true
+  #   ports:
+  #     - "5555:5555"
+  #   environment:
+  #     - DEVICE=Nexus 5
+  #     - CONNECT_TO_GRID=true
+  #     - APPIUM=true
+  #   networks:
+  #     - appium-network
+
+networks:
+  appium-network:
+    driver: bridge
