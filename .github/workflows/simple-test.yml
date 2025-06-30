@@ -1,0 +1,68 @@
+name: 简化Appium测试
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: 安装Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: 安装Appium
+        run: |
+          npm install -g appium@latest
+          echo "Appium版本:"
+          appium --version
+
+      - name: 安装Python依赖
+        run: |
+          pip install -r requirements.txt
+
+      - name: 验证环境
+        run: |
+          echo "Python版本:"
+          python --version
+          echo "Node版本:"
+          node --version
+          echo "NPM版本:"
+          npm --version
+
+      - name: 启动Appium服务器
+        run: |
+          appium --log appium.log &
+          sleep 10
+          echo "Appium服务器启动完成"
+
+      - name: 运行测试
+        run: |
+          python run_tests.py --report
+        env:
+          APPIUM_HOST: 127.0.0.1
+          APPIUM_PORT: 4723
+
+      - name: 上传结果
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            reports/
+            screenshots/
+            appium.log
