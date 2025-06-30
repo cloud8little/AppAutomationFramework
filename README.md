@@ -1,4 +1,4 @@
-# 我的天文台应用自动化测试框架
+# 简单手机应用自动化测试框架
 
 ## 📋 项目概述
 
@@ -81,7 +81,7 @@ appium --version
 #### 2.1 克隆项目
 
 ```bash
-git clone <项目地址>
+git clone https://github.com/cloud8little/AppAutomationFramework.git
 cd AppAutomationFramework
 ```
 
