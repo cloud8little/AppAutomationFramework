@@ -204,7 +204,7 @@ strategy:
 
 ```yaml
 - name: 缓存Python依赖
-  uses: actions/cache@v3
+  uses: actions/cache@v4
   with:
     path: ~/.cache/pip
     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
