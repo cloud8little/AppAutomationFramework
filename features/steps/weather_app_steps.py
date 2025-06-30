@@ -1,5 +1,5 @@
 """
-我的天文台应用测试步骤实现
+Step implementations for the My Observatory app tests.
 """
 from behave import given, when, then, step
 from utils.app_driver import AppDriver
@@ -8,164 +8,164 @@ from utils.page_objects import MainPage, SearchPage, MenuPage, SettingsPage
 import time
 
 
-@given('我打开了我的天文台应用')
+@given('I have opened the My Observatory app')
 def step_open_weather_app(context):
-    """打开我的天文台应用"""
+    """Opens the My Observatory app."""
     context.driver = AppDriver(platform="android")
     context.driver.start_driver()
     context.main_page = MainPage(context.driver)
     context.test_data = TestDataManager()
     
-    # 等待应用加载完成
+    # Wait for the app to load completely
     time.sleep(3)
 
 
-@given('我在主页面')
+@given('I am on the main page')
 def step_on_main_page(context):
-    """确认在主页面"""
-    # 检查主页面元素是否存在
-    assert context.driver.is_element_present(context.main_page.SEARCH_BUTTON), "搜索按钮未找到"
+    """Confirms that the current page is the main page."""
+    # Check if a key element of the main page exists
+    assert context.driver.is_element_present(context.main_page.SEARCH_BUTTON), "Search button not found, not on the main page."
 
 
-@when('我点击搜索按钮')
+@when('I click the search button')
 def step_click_search_button(context):
-    """点击搜索按钮"""
+    """Clicks the search button."""
     context.main_page.click_search()
     context.search_page = SearchPage(context.driver)
     time.sleep(2)
 
 
-@when('我搜索城市 "{city_name}"')
+@when('I search for the city "{city_name}"')
 def step_search_city(context, city_name):
-    """搜索指定城市"""
+    """Searches for a specific city."""
     context.search_page.search_city(city_name)
     time.sleep(2)
 
 
-@when('我选择城市 "{city_name}"')
+@when('I select the city "{city_name}"')
 def step_select_city(context, city_name):
-    """选择指定城市"""
+    """Selects a specific city from the search results."""
     context.search_page.select_city(city_name)
     time.sleep(2)
 
 
-@when('我点击定位按钮')
+@when('I click the location button')
 def step_click_location_button(context):
-    """点击定位按钮"""
+    """Clicks the location button to get weather for the current location."""
     context.main_page.click_location()
     time.sleep(3)
 
 
-@when('我点击菜单按钮')
+@when('I click the menu button')
 def step_click_menu_button(context):
-    """点击菜单按钮"""
+    """Clicks the menu button."""
     context.main_page.click_menu()
     context.menu_page = MenuPage(context.driver)
     time.sleep(2)
 
 
-@when('我点击设置按钮')
+@when('I click the settings button')
 def step_click_settings_button(context):
-    """点击设置按钮"""
+    """Clicks the settings button."""
     context.menu_page.click_settings()
     context.settings_page = SettingsPage(context.driver)
     time.sleep(2)
 
 
-@when('我切换温度单位')
+@when('I toggle the temperature unit')
 def step_toggle_temperature_unit(context):
-    """切换温度单位"""
+    """Toggles the temperature unit setting."""
     context.settings_page.toggle_temperature_unit()
     time.sleep(1)
 
 
-@when('我切换通知设置')
+@when('I toggle the notification settings')
 def step_toggle_notification(context):
-    """切换通知设置"""
+    """Toggles the notification setting."""
     context.settings_page.toggle_notification()
     time.sleep(1)
 
 
-@then('我应该看到当前温度信息')
+@then('I should see the current temperature information')
 def step_see_current_temperature(context):
-    """验证当前温度信息显示"""
+    """Verifies that the current temperature is displayed."""
     temperature = context.main_page.get_current_temperature()
-    assert temperature is not None, "未找到温度信息"
-    assert context.test_data.validate_temperature(temperature), f"温度值 {temperature} 不在合理范围内"
+    assert temperature is not None, "Temperature information not found."
+    assert context.test_data.validate_temperature(temperature), f"Temperature value {temperature} is not within a reasonable range."
 
 
-@then('我应该看到天气描述')
+@then('I should see the weather description')
 def step_see_weather_description(context):
-    """验证天气描述显示"""
+    """Verifies that the weather description is displayed."""
     description = context.main_page.get_weather_description()
-    assert description, "未找到天气描述"
-    assert len(description) > 0, "天气描述为空"
+    assert description, "Weather description not found."
+    assert len(description) > 0, "Weather description is empty."
 
 
-@then('我应该看到湿度信息')
+@then('I should see the humidity information')
 def step_see_humidity_info(context):
-    """验证湿度信息显示"""
+    """Verifies that the humidity information is displayed."""
     humidity = context.main_page.get_humidity()
-    assert humidity is not None, "未找到湿度信息"
-    assert context.test_data.validate_humidity(humidity), f"湿度值 {humidity} 不在合理范围内"
+    assert humidity is not None, "Humidity information not found."
+    assert context.test_data.validate_humidity(humidity), f"Humidity value {humidity} is not within a reasonable range."
 
 
-@then('我应该看到风速信息')
+@then('I should see the wind speed information')
 def step_see_wind_speed_info(context):
-    """验证风速信息显示"""
+    """Verifies that the wind speed information is displayed."""
     wind_speed = context.main_page.get_wind_speed()
-    assert wind_speed is not None, "未找到风速信息"
+    assert wind_speed is not None, "Wind speed information not found."
     wind_range = context.test_data.get_expected_weather_range().get("wind_speed_range", {})
     min_wind = wind_range.get("min", 0)
     max_wind = wind_range.get("max", 100)
-    assert min_wind <= wind_speed <= max_wind, f"风速值 {wind_speed} 不在合理范围内"
+    assert min_wind <= wind_speed <= max_wind, f"Wind speed value {wind_speed} is not within a reasonable range."
 
 
-@then('搜索页面应该显示')
+@then('the search page should be displayed')
 def step_search_page_should_display(context):
-    """验证搜索页面显示"""
-    assert context.driver.is_element_present(context.search_page.SEARCH_INPUT), "搜索输入框未找到"
+    """Verifies that the search page is displayed."""
+    assert context.driver.is_element_present(context.search_page.SEARCH_INPUT), "Search input not found, not on the search page."
 
 
-@then('城市 "{city_name}" 应该被选中')
+@then('the city "{city_name}" should be selected')
 def step_city_should_be_selected(context, city_name):
-    """验证城市被选中"""
-    # 这里可以检查页面标题或其他标识来确认城市已选中
+    """Verifies that the correct city is selected."""
+    # This can be verified by checking the page title or another identifier
     time.sleep(2)
-    # 可以根据实际应用的元素来验证
+    # Verification logic can be added based on the actual app's elements.
 
 
-@then('设置页面应该显示')
+@then('the settings page should be displayed')
 def step_settings_page_should_display(context):
-    """验证设置页面显示"""
-    assert context.driver.is_element_present(context.settings_page.TEMPERATURE_UNIT_TOGGLE), "温度单位切换按钮未找到"
+    """Verifies that the settings page is displayed."""
+    assert context.driver.is_element_present(context.settings_page.TEMPERATURE_UNIT_TOGGLE), "Temperature unit toggle not found, not on the settings page."
 
 
-@step('我关闭应用')
+@step('I close the app')
 def step_close_app(context):
-    """关闭应用"""
+    """Closes the application."""
     if hasattr(context, 'driver') and context.driver:
         context.driver.quit_driver()
 
 
-# 数据驱动测试步骤
-@given('我使用测试数据中的城市 "{city_key}"')
+# Steps for data-driven testing
+@given('I use the city "{city_key}" from the test data')
 def step_use_test_city(context, city_key):
-    """使用测试数据中的城市"""
+    """Uses a city from the test data file."""
     context.city_data = context.test_data.get_city_data(city_key)
     context.city_name = context.test_data.get_city_name(city_key)
-    assert context.city_name, f"未找到城市数据: {city_key}"
+    assert context.city_name, f"City data not found for key: {city_key}"
 
 
-@then('温度应该在合理范围内')
+@then('the temperature should be within a reasonable range')
 def step_temperature_should_be_reasonable(context):
-    """验证温度在合理范围内"""
+    """Verifies that the temperature is within a reasonable range."""
     temperature = context.main_page.get_current_temperature()
-    assert context.test_data.validate_temperature(temperature), f"温度 {temperature} 不在合理范围内"
+    assert context.test_data.validate_temperature(temperature), f"Temperature {temperature} is not within a reasonable range."
 
 
-@then('湿度应该在合理范围内')
+@then('the humidity should be within a reasonable range')
 def step_humidity_should_be_reasonable(context):
-    """验证湿度在合理范围内"""
+    """Verifies that the humidity is within a reasonable range."""
     humidity = context.main_page.get_humidity()
-    assert context.test_data.validate_humidity(humidity), f"湿度 {humidity} 不在合理范围内" 
+    assert context.test_data.validate_humidity(humidity), f"Humidity {humidity} is not within a reasonable range." 

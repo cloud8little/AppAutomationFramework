@@ -1,229 +1,229 @@
-# 简单手机应用自动化测试框架
+# Simple Mobile App Automation Test Framework
 
-## 📋 项目概述
+## 📋 Project Overview
 
-这是一个基于 **Python + Behave + Appium** 的移动应用自动化测试框架，专门为"我的天文台"天气应用设计。该框架采用 BDD（行为驱动开发）模式，提供了完整的测试解决方案。
+This is a mobile application automation testing framework based on **Python + Behave + Appium**, specifically designed for the "My Observatory" weather app. The framework adopts the BDD (Behavior-Driven Development) model and provides a complete testing solution.
 
-### 🎯 主要特性
+### 🎯 Key Features
 
-- ✅ **BDD 测试模式**: 使用 Gherkin 语法编写测试用例，业务人员也能理解
-- ✅ **跨平台支持**: 支持 Android 和 iOS 平台
-- ✅ **页面对象模式**: 良好的代码结构和可维护性
-- ✅ **数据驱动测试**: 结构化管理测试数据
-- ✅ **详细报告**: 支持多种报告格式（HTML、Allure 等）
-- ✅ **失败截图**: 自动保存失败场景的截图
-- ✅ **并行执行**: 支持并行运行测试用例
-- ✅ **环境配置**: 灵活的配置文件管理
+- ✅ **BDD Testing Model**: Test cases are written in Gherkin syntax, which is understandable even for business personnel.
+- ✅ **Cross-Platform Support**: Supports both Android and iOS platforms.
+- ✅ **Page Object Model**: Good code structure and maintainability.
+- ✅ **Data-Driven Testing**: Structured management of test data.
+- ✅ **Detailed Reports**: Supports multiple report formats (HTML, Allure, etc.).
+- ✅ **Failure Screenshots**: Automatically saves screenshots of failed scenarios.
+- ✅ **Parallel Execution**: Supports running test cases in parallel.
+- ✅ **Environment Configuration**: Flexible configuration file management.
 
-## 🏗️ 项目结构
+## 🏗️ Project Structure
 
 ```
 AppAutomationFramework/
-├── features/                          # Behave测试文件
-│   ├── steps/                         # 测试步骤实现
-│   │   └── weather_app_steps.py       # 天气应用测试步骤
-│   ├── environment.py                 # Behave环境配置
-│   └── weather_app.feature            # 测试用例文件
-├── config/                            # 配置文件
-│   └── config.yaml                    # 应用配置
-├── test_data/                         # 测试数据
-│   └── weather_data.yaml              # 天气测试数据
-├── utils/                             # 工具类
-│   ├── app_driver.py                  # APP驱动管理
-│   ├── test_data_manager.py           # 测试数据管理
-│   └── page_objects.py                # 页面对象模型
-├── reports/                           # 测试报告
-├── screenshots/                       # 失败截图
-├── requirements.txt                   # Python依赖
-├── behave.ini                         # Behave配置
-├── run_tests.py                       # 测试运行脚本
-└── README.md                          # 项目文档
+├── features/                          # Behave test files
+│   ├── steps/                         # Test step implementations
+│   │   └── weather_app_steps.py       # Weather app test steps
+│   ├── environment.py                 # Behave environment configuration
+│   └── weather_app.feature            # Test case file
+├── config/                            # Configuration files
+│   └── config.yaml                    # Application configuration
+├── test_data/                         # Test data
+│   └── weather_data.yaml              # Weather test data
+├── utils/                             # Utility classes
+│   ├── app_driver.py                  # App driver management
+│   ├── test_data_manager.py           # Test data management
+│   └── page_objects.py                # Page Object Model
+├── reports/                           # Test reports
+├── screenshots/                       # Failure screenshots
+├── requirements.txt                   # Python dependencies
+├── behave.ini                         # Behave configuration
+├── run_tests.py                       # Test runner script
+└── README.md                          # Project documentation
 ```
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 1. 环境准备
+### 1. Environment Setup
 
-#### 1.1 安装 Python
+#### 1.1 Install Python
 
-确保您的系统已安装 Python 3.7 或更高版本：
+Ensure that your system has Python 3.7 or higher installed:
 
 ```bash
 python --version
 ```
 
-#### 1.2 安装 Node.js 和 Appium
+#### 1.2 Install Node.js and Appium
 
 ```bash
-# 安装Node.js (如果未安装)
-# 下载地址: https://nodejs.org/
+# Install Node.js (if not already installed)
+# Download from: https://nodejs.org/
 
-# 安装Appium
+# Install Appium
 npm install -g appium
 
-# 验证安装
+# Verify installation
 appium --version
 ```
 
-#### 1.3 安装 Android SDK (Android 测试)
+#### 1.3 Install Android SDK (for Android testing)
 
-- 下载并安装 Android Studio
-- 配置 ANDROID_HOME 环境变量
-- 创建 Android 模拟器或连接真机
+- Download and install Android Studio.
+- Configure the ANDROID_HOME environment variable.
+- Create an Android emulator or connect a real device.
 
-#### 1.4 安装 Xcode (iOS 测试，仅 macOS)
+#### 1.4 Install Xcode (for iOS testing, macOS only)
 
-- 从 App Store 安装 Xcode
-- 安装 iOS 模拟器
+- Install Xcode from the App Store.
+- Install the iOS simulator.
 
-### 2. 项目部署
+### 2. Project Deployment
 
-#### 2.1 克隆项目
+#### 2.1 Clone the Project
 
 ```bash
 git clone https://github.com/cloud8little/AppAutomationFramework.git
 cd AppAutomationFramework
 ```
 
-#### 2.2 安装 Python 依赖
+#### 2.2 Install Python Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 2.3 配置应用信息
+#### 2.3 Configure Application Information
 
-编辑 `config/config.yaml` 文件，根据您的环境修改配置：
+Edit the `config/config.yaml` file and modify the configuration according to your environment:
 
 ```yaml
-# 修改应用包名和活动名
+# Modify the app package and activity names
 environments:
   android:
     app_package: "com.weather.forecast.weatherlive"
     app_activity: "com.weather.forecast.weatherlive.MainActivity"
 ```
 
-#### 2.4 启动 Appium 服务器
+#### 2.4 Start the Appium Server
 
 ```bash
-# 启动Appium服务器
+# Start the Appium server
 appium
 ```
 
-### 3. 运行测试
+### 3. Running Tests
 
-#### 3.1 基本运行
+#### 3.1 Basic Run
 
 ```bash
-# 运行所有测试
+# Run all tests
 python run_tests.py
 
-# 或直接使用behave
+# Or use behave directly
 behave
 ```
 
-#### 3.2 高级运行选项
+#### 3.2 Advanced Run Options
 
 ```bash
-# 运行冒烟测试
+# Run smoke tests
 python run_tests.py --smoke
 
-# 运行回归测试
+# Run regression tests
 python run_tests.py --regression
 
-# 生成测试报告
+# Generate a test report
 python run_tests.py --report
 
-# 生成Allure报告
+# Generate an Allure report
 python run_tests.py --allure
 
-# 并行执行测试
+# Run tests in parallel
 python run_tests.py --parallel
 
-# 按标签运行测试
+# Run tests by tag
 python run_tests.py --tags "@smoke"
 ```
 
-#### 3.3 使用 behave 命令
+#### 3.3 Using the behave Command
 
 ```bash
-# 运行所有测试
+# Run all tests
 behave
 
-# 运行特定标签的测试
+# Run tests with a specific tag
 behave --tags="@smoke"
 
-# 生成JSON报告
+# Generate a JSON report
 behave --format=json --outfile=reports/report.json
 
-# 并行执行
+# Run in parallel
 behave --processes=2
 ```
 
-## 📝 测试用例编写
+## 📝 Writing Test Cases
 
-### 1. 创建 Feature 文件
+### 1. Create a Feature File
 
-在 `features/` 目录下创建 `.feature` 文件：
+Create a `.feature` file in the `features/` directory:
 
 ```gherkin
-# language: zh-CN
-功能: 天气查询功能
-  作为用户
-  我希望能够查询不同城市的天气
-  以便了解天气状况
+# language: en
+Feature: Weather Inquiry Functionality
+  As a user
+  I want to be able to query the weather for different cities
+  So that I can understand the weather conditions
 
-  场景: 查询北京天气
-    假设我打开了我的天文台应用
-    当我搜索城市 "北京"
-    并且我选择城市 "北京"
-    那么我应该看到当前温度信息
-    并且我应该看到天气描述
+  Scenario: Query Beijing Weather
+    Given I have opened the My Observatory app
+    When I search for the city "Beijing"
+    And I select the city "Beijing"
+    Then I should see the current temperature information
+    And I should see the weather description
 ```
 
-### 2. 实现测试步骤
+### 2. Implement Test Steps
 
-在 `features/steps/` 目录下创建步骤实现文件：
+Create a step implementation file in the `features/steps/` directory:
 
 ```python
 from behave import given, when, then
 from utils.app_driver import AppDriver
 
-@given('我打开了我的天文台应用')
+@given('I have opened the My Observatory app')
 def step_open_app(context):
     context.driver = AppDriver()
     context.driver.start_driver()
 
-@when('我搜索城市 "{city_name}"')
+@when('I search for the city "{city_name}"')
 def step_search_city(context, city_name):
-    # 实现搜索逻辑
+    # Implement search logic here
     pass
 ```
 
-### 3. 添加测试数据
+### 3. Add Test Data
 
-在 `test_data/` 目录下创建 YAML 文件：
+Create a YAML file in the `test_data/` directory:
 
 ```yaml
 cities:
   beijing:
-    name: "北京"
+    name: "Beijing"
     coordinates:
       latitude: 39.9042
       longitude: 116.4074
 ```
 
-## 🔧 配置说明
+## 🔧 Configuration Explanation
 
-### 1. 应用配置 (config/config.yaml)
+### 1. Application Configuration (config/config.yaml)
 
 ```yaml
-# Appium服务器配置
+# Appium server configuration
 appium:
   host: "127.0.0.1"
   port: 4723
 
-# 测试环境配置
+# Test environment configuration
 environments:
   android:
     platform_name: "Android"
@@ -233,7 +233,7 @@ environments:
     app_activity: "com.weather.forecast.weatherlive.MainActivity"
 ```
 
-### 2. Behave 配置 (behave.ini)
+### 2. Behave Configuration (behave.ini)
 
 ```ini
 [behave]
@@ -243,11 +243,11 @@ show_timings=true
 verbose=true
 ```
 
-## 📊 测试报告
+## 📊 Test Reports
 
-### 1. 控制台报告
+### 1. Console Report
 
-运行测试时会显示详细的执行信息：
+Detailed execution information will be displayed when running the tests:
 
 ```
 ==================================================
@@ -261,73 +261,74 @@ verbose=true
     - 步骤通过: 我打开了我的天文台应用
 ```
 
-### 2. HTML 报告
+### 2. HTML Report
 
 ```bash
 python run_tests.py --report
 ```
 
-### 3. Allure 报告
+### 3. Allure Report
 
 ```bash
-# 生成Allure报告
+# Generate Allure report
 python run_tests.py --allure
 
-# 查看报告
+# View report
 allure serve reports/allure-results
 ```
 
-## 🐛 故障排除
+## 🐛 Troubleshooting
 
-### 1. Appium 连接问题
+### 1. Appium Connection Problem
 
 ```bash
-# 检查Appium服务器状态
+# Check Appium server status
 curl http://127.0.0.1:4723/status
 
-# 重启Appium服务器
+# Restart Appium server
 appium --reset
 ```
 
-### 2. 设备连接问题
+### 2. Device Connection Problem
 
 ```bash
-# 检查Android设备
+# Check Android device
 adb devices
 
-# 检查iOS设备
+# Check iOS device
 xcrun simctl list devices
 ```
 
-### 3. 元素定位问题
+### 3. Element Locating Problem
 
-- 使用 Appium Inspector 查看元素
-- 检查元素 ID 是否正确
-- 确认应用版本兼容性
-  ### 4. 常见错误解决
+- Use Appium Inspector to view elements
+- Check if element ID is correct
+- Confirm application version compatibility
 
-#### 错误: "No such element"
+### 4. Common Error Solutions
 
-- 检查元素定位器是否正确
-- 增加等待时间
-- 确认页面已完全加载
+#### Error: "No such element"
 
-#### 错误: "Session not created"
+- Check element locator is correct
+- Increase waiting time
+- Confirm page is fully loaded
 
-- 检查设备连接状态
-- 确认应用已安装
-- 验证 Appium 配置
+#### Error: "Session not created"
 
-## 🔄 CI/CD 集成
+- Check device connection status
+- Confirm application is installed
+- Verify Appium configuration
+
+## 🔄 CI/CD Integration
 
 ### 1. GitHub Actions
 
-项目包含两个 CI 配置文件：
+Project includes two CI configuration files:
 
-#### 主要测试流程 (`.github/workflows/appium-test.yml`)
+#### Main Test Flow (`.github/workflows/appium-test.yml`)
 
 ```yaml
-name: Appium 自动化测试
+name: Appium Automation Test
 on:
   push:
     branches: [main, develop]
@@ -339,46 +340,46 @@ jobs:
   appium-test:
     runs-on: ubuntu-latest
     steps:
-      - name: 设置Python 3.9
+      - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
-      - name: 安装Appium
+      - name: Install Appium
         run: npm install -g appium@latest
-      - name: 运行测试
+      - name: Run tests
         run: python run_tests.py --report
 ```
 
-#### 完整测试流程 (`.github/workflows/test.yml`)
+#### Complete Test Flow (`.github/workflows/test.yml`)
 
-包含多 Python 版本测试和 Android 模拟器支持。
+Includes multi-Python version testing and Android emulator support.
 
-### 2. Docker 支持
+### 2. Docker Support
 
-#### 构建和运行
+#### Build and Run
 
 ```bash
-# 构建镜像
+# Build image
 docker build -t appium-test-framework .
 
-# 使用docker-compose运行
+# Use docker-compose to run
 docker-compose up --build
 
-# 直接运行容器
+# Run container directly
 docker run -p 4723:4723 appium-test-framework
 ```
 
-#### 环境变量
+#### Environment Variables
 
-| 变量名       | 默认值           | 说明              |
-| ------------ | ---------------- | ----------------- |
-| APPIUM_HOST  | 127.0.0.1        | Appium 服务器地址 |
-| APPIUM_PORT  | 4723             | Appium 服务器端口 |
-| ANDROID_HOME | /opt/android-sdk | Android SDK 路径  |
+| Variable Name | Default Value    | Description           |
+| ------------- | ---------------- | --------------------- |
+| APPIUM_HOST   | 127.0.0.1        | Appium server address |
+| APPIUM_PORT   | 4723             | Appium server port    |
+| ANDROID_HOME  | /opt/android-sdk | Android SDK path      |
 
-### 3. 本地 CI/CD 设置
+### 3. Local CI/CD Setup
 
-详细设置说明请参考 [CI_CD_SETUP.md](CI_CD_SETUP.md)
+Detailed setup instructions can be found in [CI_CD_SETUP.md](CI_CD_SETUP.md)
 
 ### 4. Jenkins Pipeline
 
@@ -420,51 +421,51 @@ pipeline {
 }
 ```
 
-## 📈 最佳实践
+## 📈 Best Practices
 
-### 1. 测试用例设计
+### 1. Test Case Design
 
-- 使用清晰的场景描述
-- 保持测试用例独立性
-- 合理使用背景和场景大纲
+- Use clear scenario descriptions
+- Keep test cases independent
+- Use background and scenario outlines reasonably
 
-### 2. 代码组织
+### 2. Code Organization
 
-- 遵循页面对象模式
-- 将测试数据与测试逻辑分离
-- 使用有意义的变量名和函数名
+- Follow Page Object Model
+- Separate test data from test logic
+- Use meaningful variable names and function names
 
-### 3. 错误处理
+### 3. Error Handling
 
-- 添加适当的等待机制
-- 实现失败重试机制
-- 保存详细的错误信息
+- Add appropriate waiting mechanisms
+- Implement failure retry mechanism
+- Save detailed error information
 
-### 4. 性能优化
+### 4. Performance Optimization
 
-- 使用并行执行提高效率
-- 优化元素定位策略
-- 减少不必要的等待时间
+- Use parallel execution to improve efficiency
+- Optimize element locating strategy
+- Reduce unnecessary waiting time
 
-## 🤝 贡献指南
+## 🤝 Contribution Guidelines
 
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开 Pull Request
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 许可证
+## 📄 License
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
 
-## 📞 联系方式
+## 📞 Contact Information
 
-如有问题或建议，请通过以下方式联系：
+If you have any questions or suggestions, please contact us via:
 
-- 项目 Issues: [GitHub Issues](https://github.com/your-repo/issues)
-- 邮箱: your-email@example.com
+- Project Issues: [GitHub Issues](https://github.com/your-repo/issues)
+- Email: your-email@example.com
 
 ---
 
-**注意**: 使用前请确保已正确配置 Appium 环境和测试设备。
+**Note**: Please ensure that Appium environment and test device are correctly configured before use.

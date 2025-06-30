@@ -1,66 +1,66 @@
-# language: zh-CN
-功能: 我的天文台应用自动化测试
-  作为用户
-  我希望能够使用我的天文台应用查看天气信息
-  以便了解当前和未来的天气状况
+# language: en
+Feature: My Observatory App Automation Tests
+  As a user
+  I want to use the My Observatory app to check weather information
+  So that I can know the current and future weather conditions
 
-  背景:
-    假设我打开了我的天文台应用
-    并且我在主页面
+  Background:
+    Given I have opened the My Observatory app
+    And I am on the main page
 
-  场景大纲: 查看不同城市的天气信息
-    当我搜索城市 "<城市名>"
-    并且我选择城市 "<城市名>"
-    那么我应该看到当前温度信息
-    并且我应该看到天气描述
-    并且我应该看到湿度信息
-    并且我应该看到风速信息
+  Scenario Outline: Check weather information for different cities
+    When I search for the city "<city_name>"
+    And I select the city "<city_name>"
+    Then I should see the current temperature information
+    And I should see the weather description
+    And I should see the humidity information
+    And I should see the wind speed information
 
-    例子:
-      | 城市名 |
-      | 北京   |
-      | 上海   |
-      | 广州   |
+    Examples:
+      | city_name |
+      | Beijing   |
+      | Shanghai  |
+      | Guangzhou |
 
-  场景: 使用定位功能获取当前位置天气
-    当我点击定位按钮
-    那么我应该看到当前温度信息
-    并且我应该看到天气描述
-    并且我应该看到湿度信息
-    并且我应该看到风速信息
+  Scenario: Get current location weather using the location feature
+    When I click the location button
+    Then I should see the current temperature information
+    And I should see the weather description
+    And I should see the humidity information
+    And I should see the wind speed information
 
-  场景: 查看天气详细信息
-    假设我使用测试数据中的城市 "beijing"
-    当我搜索城市 "北京"
-    并且我选择城市 "北京"
-    那么我应该看到当前温度信息
-    并且我应该看到天气描述
-    并且我应该看到湿度信息
-    并且我应该看到风速信息
-    并且温度应该在合理范围内
-    并且湿度应该在合理范围内
+  Scenario: View detailed weather information
+    Given I use the city "beijing" from the test data
+    When I search for the city "Beijing"
+    And I select the city "Beijing"
+    Then I should see the current temperature information
+    And I should see the weather description
+    And I should see the humidity information
+    And I should see the wind speed information
+    And the temperature should be within a reasonable range
+    And the humidity should be within a reasonable range
 
-  场景: 访问应用设置
-    当我点击菜单按钮
-    并且我点击设置按钮
-    那么设置页面应该显示
+  Scenario: Access application settings
+    When I click the menu button
+    And I click the settings button
+    Then the settings page should be displayed
 
-  场景: 修改温度单位设置
-    假设我点击菜单按钮
-    并且我点击设置按钮
-    当我切换温度单位
-    那么设置页面应该显示
+  Scenario: Change temperature unit setting
+    Given I click the menu button
+    And I click the settings button
+    When I toggle the temperature unit
+    Then the settings page should be displayed
 
-  场景: 修改通知设置
-    假设我点击菜单按钮
-    并且我点击设置按钮
-    当我切换通知设置
-    那么设置页面应该显示
+  Scenario: Change notification settings
+    Given I click the menu button
+    And I click the settings button
+    When I toggle the notification settings
+    Then the settings page should be displayed
 
-  场景: 搜索功能测试
-    当我点击搜索按钮
-    那么搜索页面应该显示
-    当我搜索城市 "北京"
-    并且我选择城市 "北京"
-    那么城市 "北京" 应该被选中
-    并且我应该看到当前温度信息 
+  Scenario: Search functionality test
+    When I click the search button
+    Then the search page should be displayed
+    When I search for the city "Beijing"
+    And I select the city "Beijing"
+    Then the city "Beijing" should be selected
+    And I should see the current temperature information 

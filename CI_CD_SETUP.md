@@ -1,200 +1,200 @@
-# CI/CD 设置指南
+# CI/CD Setup Guide
 
-本文档介绍如何设置和配置自动化测试的 CI/CD 流程。
+This document describes how to set up and configure the CI/CD pipeline for automated testing.
 
-## 📋 目录
+## 📋 Table of Contents
 
-- [GitHub Actions 配置](#github-actions-配置)
-- [Docker 环境](#docker-环境)
-- [本地开发](#本地开发)
-- [故障排除](#故障排除)
+- [GitHub Actions Configuration](#github-actions-configuration)
+- [Docker Environment](#docker-environment)
+- [Local Development](#local-development)
+- [Troubleshooting](#troubleshooting)
 
-## 🚀 GitHub Actions 配置
+## 🚀 GitHub Actions Configuration
 
-### 1. 自动触发
+### 1. Automatic Triggers
 
-CI/CD 流程会在以下情况下自动触发：
+The CI/CD pipeline is automatically triggered in the following cases:
 
-- 推送到 `main` 或 `develop` 分支
-- 创建 Pull Request 到 `main` 分支
-- 手动触发（workflow_dispatch）
+- Pushing to the `main` or `develop` branch
+- Creating a Pull Request to the `main` branch
+- Manual trigger (workflow_dispatch)
 
-### 2. 工作流程
+### 2. Workflows
 
-项目包含三个不同的 CI 配置文件，适用于不同场景：
+The project includes three different CI configuration files for different scenarios:
 
-#### 简化测试流程 (`.github/workflows/simple-test.yml`) - 推荐
+#### Simplified Test Flow (`.github/workflows/simple-test.yml`) - Recommended
 
-适用于基本的 Appium 测试，不包含 Android SDK：
+Suitable for basic Appium tests, does not include the Android SDK:
 
-- ✅ 快速启动
-- ✅ 最小依赖
-- ✅ 适合验证基本功能
+- ✅ Quick start
+- ✅ Minimal dependencies
+- ✅ Suitable for verifying basic functionality
 
-#### 标准测试流程 (`.github/workflows/appium-test.yml`)
+#### Standard Test Flow (`.github/workflows/appium-test.yml`)
 
-包含完整的 Appium 环境：
+Includes a complete Appium environment:
 
-- ✅ Appium 服务器
-- ✅ 基本系统依赖
-- ✅ 适合大多数测试场景
+- ✅ Appium server
+- ✅ Basic system dependencies
+- ✅ Suitable for most testing scenarios
 
-#### 完整测试流程 (`.github/workflows/test.yml`)
+#### Complete Test Flow (`.github/workflows/test.yml`)
 
-包含 Android SDK 和模拟器支持：
+Includes Android SDK and emulator support:
 
-- ✅ 多 Python 版本测试
-- ✅ Android SDK 环境
-- ✅ 模拟器支持
-- ⚠️ 构建时间较长
+- ✅ Multi-Python version testing
+- ✅ Android SDK environment
+- ✅ Emulator support
+- ⚠️ Longer build times
 
-### 3. 推荐配置
+### 3. Recommended Configuration
 
-对于大多数项目，建议使用 **简化测试流程**：
+For most projects, it is recommended to use the **Simplified Test Flow**:
 
-1. 在 GitHub 仓库中创建 `.github/workflows/` 目录
-2. 复制 `simple-test.yml` 到该目录
-3. 提交并推送更改
+1. Create the `.github/workflows/` directory in your GitHub repository.
+2. Copy `simple-test.yml` to this directory.
+3. Commit and push the changes.
 
-如果需要 Android SDK 支持，可以使用 `appium-test.yml` 或 `test.yml`。
+If you need Android SDK support, you can use `appium-test.yml` or `test.yml`.
 
-## 🐳 Docker 环境
+## 🐳 Docker Environment
 
-### 1. 构建镜像
+### 1. Build the Image
 
 ```bash
 docker build -t appium-test-framework .
 ```
 
-### 2. 运行容器
+### 2. Run the Container
 
 ```bash
-# 使用docker-compose（推荐）
+# Using docker-compose (recommended)
 docker-compose up --build
 
-# 或直接使用docker
+# Or using docker directly
 docker run -p 4723:4723 -v $(pwd)/reports:/app/reports appium-test-framework
 ```
 
-### 3. 环境变量
+### 3. Environment Variables
 
-| 变量名           | 默认值           | 说明               |
-| ---------------- | ---------------- | ------------------ |
-| APPIUM_HOST      | 127.0.0.1        | Appium 服务器地址  |
-| APPIUM_PORT      | 4723             | Appium 服务器端口  |
-| ANDROID_HOME     | /opt/android-sdk | Android SDK 路径   |
-| ANDROID_SDK_ROOT | /opt/android-sdk | Android SDK 根路径 |
+| Variable Name    | Default Value    | Description           |
+| ---------------- | ---------------- | --------------------- |
+| APPIUM_HOST      | 127.0.0.1        | Appium server address |
+| APPIUM_PORT      | 4723             | Appium server port    |
+| ANDROID_HOME     | /opt/android-sdk | Android SDK path      |
+| ANDROID_SDK_ROOT | /opt/android-sdk | Android SDK root path |
 
-## 💻 本地开发
+## 💻 Local Development
 
-### 1. 环境要求
+### 1. Environment Requirements
 
 - Python 3.8+
 - Node.js 16+
 - Java 11+
 - Android SDK
 
-### 2. 安装步骤
+### 2. Installation Steps
 
 ```bash
-# 1. 安装Python依赖
+# 1. Install Python dependencies
 pip install -r requirements.txt
 
-# 2. 安装Appium
+# 2. Install Appium
 npm install -g appium@latest
 npm install -g appium-doctor
 
-# 3. 验证安装
+# 3. Verify installation
 appium --version
 appium-doctor --android
 ```
 
-### 3. 运行测试
+### 3. Running Tests
 
 ```bash
-# 启动Appium服务器
+# Start the Appium server
 appium &
 
-# 运行测试
+# Run the tests
 python run_tests.py --report
 ```
 
-## 🔧 故障排除
+## 🔧 Troubleshooting
 
-### 1. Appium 连接问题
+### 1. Appium Connection Issues
 
-**问题**: 无法连接到 Appium 服务器
-**解决方案**:
+**Problem**: Cannot connect to the Appium server.
+**Solution**:
 
 ```bash
-# 检查Appium状态
+# Check Appium status
 curl http://127.0.0.1:4723/status
 
-# 重启Appium
+# Restart Appium
 pkill -f appium
 appium --reset
 ```
 
-### 2. Android SDK 问题
+### 2. Android SDK Issues
 
-**问题**: Android SDK 未找到
-**解决方案**:
+**Problem**: Android SDK not found.
+**Solution**:
 
 ```bash
-# 设置环境变量
+# Set environment variables
 export ANDROID_HOME=/path/to/android-sdk
 export ANDROID_SDK_ROOT=/path/to/android-sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
-# 验证安装
+# Verify installation
 adb version
 ```
 
-### 3. 权限问题
+### 3. Permission Issues
 
-**问题**: Docker 容器权限不足
-**解决方案**:
+**Problem**: Insufficient permissions in the Docker container.
+**Solution**:
 
 ```bash
-# 使用特权模式运行
+# Run in privileged mode
 docker run --privileged -p 4723:4723 appium-test-framework
 ```
 
-### 4. 网络问题
+### 4. Network Issues
 
-**问题**: 无法下载依赖
-**解决方案**:
+**Problem**: Cannot download dependencies.
+**Solution**:
 
 ```bash
-# 使用国内镜像
+# Use a regional mirror
 npm config set registry https://registry.npmmirror.com
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
-## 📊 监控和报告
+## 📊 Monitoring and Reporting
 
-### 1. 测试报告
+### 1. Test Reports
 
-- **HTML 报告**: `reports/test_report.html`
-- **Allure 报告**: `reports/allure-results/`
-- **截图**: `screenshots/`
+- **HTML Report**: `reports/test_report.html`
+- **Allure Report**: `reports/allure-results/`
+- **Screenshots**: `screenshots/`
 
-### 2. 日志文件
+### 2. Log Files
 
-- **Appium 日志**: `appium.log`
-- **测试日志**: `reports/test.log`
+- **Appium Log**: `appium.log`
+- **Test Log**: `reports/test.log`
 
-### 3. 性能指标
+### 3. Performance Metrics
 
-- 测试执行时间
-- 成功率
-- 失败原因分析
+- Test execution time
+- Success rate
+- Failure reason analysis
 
-## 🔄 持续集成最佳实践
+## 🔄 CI Best Practices
 
-### 1. 并行执行
+### 1. Parallel Execution
 
-使用矩阵策略并行测试多个 Python 版本：
+Use a matrix strategy to test multiple Python versions in parallel:
 
 ```yaml
 strategy:
@@ -202,36 +202,36 @@ strategy:
     python-version: [3.8, 3.9, "3.10"]
 ```
 
-### 2. 缓存优化
+### 2. Cache Optimization
 
-缓存依赖以加速构建：
+Cache dependencies to speed up builds:
 
 ```yaml
-- name: 缓存Python依赖
+- name: Cache Python dependencies
   uses: actions/cache@v4
   with:
     path: ~/.cache/pip
     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
 ```
 
-### 3. 条件执行
+### 3. Conditional Execution
 
-只在特定条件下运行测试：
+Run tests only under specific conditions:
 
 ```yaml
-- name: 运行测试
+- name: Run tests
   if: github.event_name == 'push' || github.event_name == 'pull_request'
   run: python run_tests.py
 ```
 
-## 📞 支持
+## 📞 Support
 
-如有问题，请：
+If you have any issues, please:
 
-1. 查看 GitHub Actions 日志
-2. 检查本地环境配置
-3. 提交 Issue 到项目仓库
+1. Check the GitHub Actions logs.
+2. Verify your local environment configuration.
+3. Submit an issue to the project repository.
 
 ---
 
-**注意**: 确保在 CI/CD 环境中正确配置了所有必要的环境变量和依赖。
+**Note**: Ensure that all necessary environment variables and dependencies are correctly configured in your CI/CD environment.

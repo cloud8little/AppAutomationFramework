@@ -1,5 +1,5 @@
 """
-APP自动化测试驱动管理类
+Appium Driver Management Class for Automation Testing.
 """
 import yaml
 import os
@@ -11,64 +11,64 @@ from selenium.common.exceptions import TimeoutException
 
 
 class AppDriver:
-    """APP驱动管理类"""
+    """App Driver Management Class"""
     
     def __init__(self, platform="android"):
         """
-        初始化APP驱动
+        Initializes the App Driver.
         
         Args:
-            platform (str): 平台类型，支持 "android" 或 "ios"
+            platform (str): The target platform, supports "android" or "ios".
         """
         self.platform = platform
         self.driver = None
         self.config = self._load_config()
         
     def _load_config(self):
-        """加载配置文件"""
+        """Loads the configuration file."""
         config_path = os.path.join(os.path.dirname(__file__), "..", "config", "config.yaml")
         with open(config_path, 'r', encoding='utf-8') as file:
             return yaml.safe_load(file)
     
     def start_driver(self):
-        """启动APP驱动"""
+        """Starts the Appium driver."""
         try:
-            # 获取平台配置
+            # Get platform-specific configuration
             platform_config = self.config['environments'][self.platform]
             appium_config = self.config['appium']
             
-            # 构建Appium服务器URL
+            # Build the Appium server URL
             server_url = f"http://{appium_config['host']}:{appium_config['port']}{appium_config['path']}"
             
-            # 创建驱动
+            # Create the driver instance
             self.driver = webdriver.Remote(server_url, platform_config)
             
-            # 设置隐式等待
+            # Set implicit wait
             self.driver.implicitly_wait(self.config['test_data']['implicit_wait'])
             
-            print(f"成功启动 {self.platform} 平台驱动")
+            print(f"Successfully started driver for {self.platform} platform.")
             return self.driver
             
         except Exception as e:
-            print(f"启动驱动失败: {str(e)}")
+            print(f"Failed to start driver: {str(e)}")
             raise
     
     def quit_driver(self):
-        """退出驱动"""
+        """Quits the driver."""
         if self.driver:
             self.driver.quit()
-            print("驱动已退出")
+            print("Driver has been quit.")
     
     def find_element(self, locator, timeout=None):
         """
-        查找元素
+        Finds an element.
         
         Args:
-            locator (tuple): 元素定位器 (By, value)
-            timeout (int): 超时时间
+            locator (tuple): Element locator (By, value).
+            timeout (int): Timeout in seconds.
             
         Returns:
-            WebElement: 找到的元素
+            WebElement: The found element.
         """
         if timeout is None:
             timeout = self.config['test_data']['default_timeout']
@@ -79,27 +79,27 @@ class AppDriver:
             )
             return element
         except TimeoutException:
-            print(f"元素未找到: {locator}")
+            print(f"Element not found: {locator}")
             raise
     
     def click_element(self, locator, timeout=None):
-        """点击元素"""
+        """Clicks an element."""
         element = self.find_element(locator, timeout)
         element.click()
     
     def input_text(self, locator, text, timeout=None):
-        """输入文本"""
+        """Inputs text into an element."""
         element = self.find_element(locator, timeout)
         element.clear()
         element.send_keys(text)
     
     def get_text(self, locator, timeout=None):
-        """获取元素文本"""
+        """Gets the text of an element."""
         element = self.find_element(locator, timeout)
         return element.text
     
     def is_element_present(self, locator, timeout=None):
-        """检查元素是否存在"""
+        """Checks if an element is present."""
         try:
             self.find_element(locator, timeout)
             return True
@@ -107,11 +107,11 @@ class AppDriver:
             return False
     
     def take_screenshot(self, filename):
-        """截图"""
+        """Takes a screenshot."""
         if self.driver:
             screenshot_path = os.path.join(
                 os.path.dirname(__file__), "..", "screenshots", filename
             )
             self.driver.save_screenshot(screenshot_path)
-            print(f"截图已保存: {screenshot_path}")
+            print(f"Screenshot saved to: {screenshot_path}")
             return screenshot_path 

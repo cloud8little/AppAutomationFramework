@@ -1,9 +1,9 @@
-# 我的天文台应用测试数据
+# My Observatory App Test Data
 
-# 城市数据
+# City Data
 cities:
   beijing:
-    name: "北京"
+    name: "Beijing"
     english_name: "Beijing"
     coordinates:
       latitude: 39.9042
@@ -11,7 +11,7 @@ cities:
     timezone: "Asia/Shanghai"
 
   shanghai:
-    name: "上海"
+    name: "Shanghai"
     english_name: "Shanghai"
     coordinates:
       latitude: 31.2304
@@ -19,22 +19,22 @@ cities:
     timezone: "Asia/Shanghai"
 
   guangzhou:
-    name: "广州"
+    name: "Guangzhou"
     english_name: "Guangzhou"
     coordinates:
       latitude: 23.1291
       longitude: 113.2644
     timezone: "Asia/Shanghai"
 
-# 天气类型
+# Weather Types
 weather_types:
-  sunny: "晴天"
-  cloudy: "多云"
-  rainy: "雨天"
-  snowy: "雪天"
-  foggy: "雾天"
+  sunny: "Sunny"
+  cloudy: "Cloudy"
+  rainy: "Rainy"
+  snowy: "Snowy"
+  foggy: "Foggy"
 
-# 测试用户数据
+# Test User Data
 test_users:
   user1:
     username: "testuser1"
@@ -46,7 +46,7 @@ test_users:
     email: "test2@example.com"
     password: "Test123456"
 
-# 预期天气数据
+# Expected Weather Data Ranges
 expected_weather:
   temperature_range:
     min: -20

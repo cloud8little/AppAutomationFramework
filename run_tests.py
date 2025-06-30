@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-我的天文台应用自动化测试运行脚本
+My Observatory App Automation Test Runner Script
 """
 import os
 import sys
@@ -11,73 +11,91 @@ from datetime import datetime
 
 def run_behave_tests(tags=None, format_type="pretty", parallel=False, output_file=None):
     """
-    运行behave测试
+    Run behave tests
     
     Args:
-        tags (str): 标签过滤
-        format_type (str): 输出格式
-        parallel (bool): 是否并行执行
-        output_file (str): 输出文件
+        tags (str): Tag filter
+        format_type (str): Output format
+        parallel (bool): Whether to run in parallel
+        output_file (str): Output file path
     """
     cmd = ["behave"]
     
-    # 添加标签过滤
+    # Add tag filter
     if tags:
         cmd.extend(["--tags", tags])
     
-    # 添加格式
+    # Add format
     cmd.extend(["--format", format_type])
     
-    # 添加并行执行
+    # Add parallel execution
     if parallel:
         cmd.extend(["--processes", "2"])
     
-    # 添加输出文件
+    # Add output file
     if output_file:
         cmd.extend(["--outfile", output_file])
     
-    # 添加详细输出
+    # Add verbose output
     cmd.append("--verbose")
     
-    print(f"执行命令: {' '.join(cmd)}")
+    print(f"Executing command: {' '.join(cmd)}")
     
     try:
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        print("测试执行成功!")
+        # On Windows, use system default encoding to avoid UTF-8 decoding errors
+        if os.name == 'nt':  # Windows
+            result = subprocess.run(cmd, check=True, capture_output=True, text=True,
+                                    encoding='gbk', errors='ignore')
+        else:
+            result = subprocess.run(cmd, check=True, capture_output=True, text=True,
+                                    encoding='utf-8', errors='ignore')
+
+        print("Tests executed successfully!")
         if result.stdout:
-            print("输出:")
+            print("Output:")
             print(result.stdout)
         return True
     except subprocess.CalledProcessError as e:
-        print(f"测试执行失败: {e}")
+        print(f"Test execution failed: {e}")
         if e.stdout:
-            print("标准输出:")
+            print("Standard Output:")
             print(e.stdout)
         if e.stderr:
-            print("错误输出:")
+            print("Error Output:")
             print(e.stderr)
         return False
+    except UnicodeDecodeError as e:
+        print(f"Encoding error: {e}")
+        print("Trying to rerun with a different encoding...")
+        try:
+            # Try not to capture output, just print to console
+            result = subprocess.run(cmd, check=True)
+            print("Tests executed successfully!")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Test execution failed: {e}")
+            return False
 
 
 def run_smoke_tests():
-    """运行冒烟测试"""
-    print("运行冒烟测试...")
+    """Run smoke tests"""
+    print("Running smoke tests...")
     return run_behave_tests(tags="@smoke", format_type="pretty")
 
 
 def run_regression_tests():
-    """运行回归测试"""
-    print("运行回归测试...")
+    """Run regression tests"""
+    print("Running regression tests...")
     return run_behave_tests(format_type="pretty")
 
 
 def run_tests_with_report():
-    """运行测试并生成报告"""
-    print("运行测试并生成报告...")
+    """Run tests and generate a report"""
+    print("Running tests and generating a report...")
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_file = f"reports/test_report_{timestamp}.txt"
     
-    # 确保报告目录存在
+    # Ensure the reports directory exists
     os.makedirs("reports", exist_ok=True)
     
     return run_behave_tests(
@@ -87,10 +105,10 @@ def run_tests_with_report():
 
 
 def run_tests_with_allure():
-    """运行测试并生成Allure报告"""
-    print("运行测试并生成Allure报告...")
+    """Run tests and generate an Allure report"""
+    print("Running tests and generating an Allure report...")
     
-    # 确保报告目录存在
+    # Ensure the allure results directory exists
     os.makedirs("reports/allure-results", exist_ok=True)
     
     cmd = [
@@ -100,29 +118,46 @@ def run_tests_with_allure():
     ]
     
     try:
-        result = subprocess.run(cmd, check=True)
-        print("Allure报告生成成功!")
-        print("运行 'allure serve reports/allure-results' 查看报告")
+        # On Windows, use system default encoding to avoid UTF-8 decoding errors
+        if os.name == 'nt':  # Windows
+            result = subprocess.run(
+                cmd, check=True, encoding='gbk', errors='ignore')
+        else:
+            result = subprocess.run(
+                cmd, check=True, encoding='utf-8', errors='ignore')
+
+        print("Allure report generated successfully!")
+        print("Run 'allure serve reports/allure-results' to view the report.")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"Allure报告生成失败: {e}")
+        print(f"Allure report generation failed: {e}")
         return False
+    except UnicodeDecodeError as e:
+        print(f"Encoding error: {e}")
+        print("Trying to rerun with a different encoding...")
+        try:
+            result = subprocess.run(cmd, check=True)
+            print("Allure report generated successfully!")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Allure report generation failed: {e}")
+            return False
 
 
 def main():
-    """主函数"""
-    parser = argparse.ArgumentParser(description="我的天文台应用自动化测试运行器")
-    parser.add_argument("--smoke", action="store_true", help="运行冒烟测试")
-    parser.add_argument("--regression", action="store_true", help="运行回归测试")
-    parser.add_argument("--report", action="store_true", help="生成测试报告")
-    parser.add_argument("--allure", action="store_true", help="生成Allure报告")
-    parser.add_argument("--tags", type=str, help="指定标签过滤")
-    parser.add_argument("--parallel", action="store_true", help="并行执行测试")
+    """Main function"""
+    parser = argparse.ArgumentParser(description="My Observatory App Automation Test Runner")
+    parser.add_argument("--smoke", action="store_true", help="Run smoke tests")
+    parser.add_argument("--regression", action="store_true", help="Run regression tests")
+    parser.add_argument("--report", action="store_true", help="Generate a test report")
+    parser.add_argument("--allure", action="store_true", help="Generate an Allure report")
+    parser.add_argument("--tags", type=str, help="Specify tag filter")
+    parser.add_argument("--parallel", action="store_true", help="Run tests in parallel")
     
     args = parser.parse_args()
     
     print("=" * 60)
-    print("我的天文台应用自动化测试框架")
+    print("My Observatory App Automation Test Framework")
     print("=" * 60)
     
     success = False
@@ -138,16 +173,16 @@ def main():
     elif args.tags:
         success = run_behave_tests(tags=args.tags, parallel=args.parallel)
     else:
-        # 默认运行所有测试
+        # Default to running all tests
         success = run_behave_tests(parallel=args.parallel)
     
     if success:
-        print("\n✅ 测试执行完成!")
+        print("\n✅ Tests finished successfully!")
         sys.exit(0)
     else:
-        print("\n❌ 测试执行失败!")
+        print("\n❌ Test execution failed!")
         sys.exit(1)
 
 
 if __name__ == "__main__":
-    main() 
+    main()
