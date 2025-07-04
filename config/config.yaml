@@ -1,23 +1,27 @@
-# APP自动化测试框架配置文件
+# APP自动化测试框架配置文件 - 统一配置
+# 合并了原 config.yaml 和 http_config.yaml 的所有配置项
 
 # Appium服务器配置
 appium:
   host: "127.0.0.1"
   port: 4723
-  path: "/wd/hub"
+  path: "" # Keep path empty for Appium 2.x, or remove the line entirely. /wd/hub is for Appium 1.x
 
 # 测试环境配置
 environments:
+  # Android测试环境
   android:
     platform_name: "Android"
     automation_name: "UiAutomator2"
     device_name: "Android Emulator"
     platform_version: "11.0"
-    app_package: "com.weather.forecast.weatherlive"
-    app_activity: "com.weather.forecast.weatherlive.MainActivity"
+    # app_package: "com.weather.forecast.weatherlive"
+    # app_activity: "com.weather.forecast.weatherlive.MainActivity"
+    app: "${workspaceFolder}/test_data/myobservatory-5-14.apk"
     no_reset: true
     new_command_timeout: 300
-    
+
+  # iOS测试环境
   ios:
     platform_name: "iOS"
     automation_name: "XCUITest"
@@ -26,6 +30,19 @@ environments:
     bundle_id: "com.weather.forecast.weatherlive"
     no_reset: true
     new_command_timeout: 300
+
+  # HTTP测试环境配置（从http_config.yaml合并）
+  development:
+    log_level: DEBUG
+    verify_ssl: false
+    
+  staging:
+    log_level: INFO
+    verify_ssl: true
+    
+  production:
+    log_level: WARNING
+    verify_ssl: true
 
 # 测试数据配置
 test_data:
@@ -38,4 +55,64 @@ test_data:
 reports:
   html_report: true
   allure_report: true
-  report_path: "./reports" 
+  report_path: "./reports"
+
+# HTTP客户端配置（从http_config.yaml合并）
+http_config:
+  # 默认HTTP设置
+  default:
+    timeout: 30
+    max_retries: 3
+    retry_backoff_factor: 0.3
+    default_headers:
+      User-Agent: "MyObservatory-Test-Framework/1.0"
+      Content-Type: "application/json"
+      Accept: "application/json"
+
+  # API服务配置
+  api_services:
+    # 天气API服务
+    weather_api:
+      base_url: "https://api.openweathermap.org/data/2.5"
+      timeout: 15
+      default_headers:
+        User-Agent: "MyObservatory-Test-Framework/1.0"
+      auth:
+        type: "api_key"
+        header_name: "X-API-Key"
+        # api_key: "your_api_key_here"  # 在实际使用时填入
+    
+    # JSONPlaceholder测试API
+    jsonplaceholder:
+      base_url: "https://jsonplaceholder.typicode.com"
+      timeout: 10
+      default_headers:
+        User-Agent: "MyObservatory-Test-Framework/1.0"
+    
+    # 本地Appium服务器
+    appium_server:
+      base_url: "http://127.0.0.1:4723"
+      timeout: 30
+      max_retries: 1
+      default_headers:
+        User-Agent: "MyObservatory-Test-Framework/1.0"
+    
+    # Mock API服务（用于测试）
+    mock_api:
+      base_url: "http://localhost:3000"
+      timeout: 10
+      default_headers:
+        User-Agent: "MyObservatory-Test-Framework/1.0"
+
+  # 重试配置
+  retry_config:
+    status_codes: [429, 500, 502, 503, 504]
+    methods: ["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"]
+    backoff_factor: 0.3
+    
+  # 文件上传/下载配置
+  file_config:
+    max_file_size: 10485760  # 10MB
+    allowed_extensions: [".jpg", ".png", ".pdf", ".txt", ".json", ".xml"]
+    upload_chunk_size: 8192
+    download_chunk_size: 8192

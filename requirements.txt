@@ -7,4 +7,20 @@ requests==2.31.0
 PyYAML==6.0
 python-dotenv==1.0.0
 allure-behave==2.13.2
-pytest-xdist==3.3.1 
+pytest-xdist==3.3.1
+
+# HTTP客户端库相关依赖
+urllib3==2.0.4
+certifi==2023.7.22
+
+# 可选的HTTP相关库
+httpx==0.24.1  # 现代异步HTTP客户端（可选）
+aiohttp==3.8.5  # 异步HTTP客户端（可选）
+
+# Web服务相关（用于测试和示例）
+flask==2.3.2  # 用于创建测试Web服务
+gunicorn==21.2.0  # WSGI服务器
+
+# 日志和调试
+colorlog==6.7.0  # 彩色日志输出
+rich==13.4.2  # 美化控制台输出 
